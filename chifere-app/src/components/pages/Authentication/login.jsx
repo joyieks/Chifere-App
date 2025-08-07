@@ -1,9 +1,11 @@
     import React, { useState } from 'react';
-    import { motion } from 'framer-motion';
-    import { FiArrowRight, FiMail, FiLock, FiEye, FiEyeOff, FiArrowLeft } from 'react-icons/fi';
-    import shoppingGirl from '../../../assets/shoppinggirl.png';
-    import googleIcon from '../../../assets/googleicon.png';
-    import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FiArrowRight, FiMail, FiLock, FiEye, FiEyeOff, FiArrowLeft } from 'react-icons/fi';
+import shoppingGirl from '../../../assets/shoppinggirl.png';
+import googleIcon from '../../../assets/googleicon.png';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useToast } from '../../../components/Toast';
 
     const shoppingSVG = `
 <svg width="350" height="350" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -35,8 +37,14 @@
         password: '',
         rememberMe: false
     });
-    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+    const { login } = useAuth();
+    const { showToast } = useToast();
+    
+    // Get the intended destination from location state
+    const from = location.state?.from?.pathname || '/buyer/dashboard';
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -46,14 +54,22 @@
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Hardcoded buyer credentials
-        if (formData.email === 'test@gmail.com' && formData.password === '123456') {
-          setError('');
-          navigate('/buyer/dashboard');
-        } else {
-          setError('Invalid email or password.');
+        setLoading(true);
+        
+        try {
+            const result = await login(formData.email, formData.password);
+            if (result.success) {
+                showToast('Login successful!', 'success');
+                navigate(from, { replace: true });
+            } else {
+                showToast(result.error || 'Login failed. Please try again.', 'error');
+            }
+        } catch (error) {
+            showToast('An error occurred. Please try again.', 'error');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -90,7 +106,6 @@
 
             {/* Login Form */}
             <form onSubmit={handleSubmit} className="space-y-6 w-full">
-                {error && <div className="text-red-600 text-center font-semibold">{error}</div>}
                 {/* Email Field */}
                 <div>
                 <label className="block text-gray-900 font-medium mb-2">Email</label>
@@ -146,9 +161,17 @@
                 {/* Sign In Button */}
                 <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
+                disabled={loading}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                 >
-                Sign in
+                {loading ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                ) : (
+                    <>
+                        <span>Sign in</span>
+                        <FiArrowRight size={20} />
+                    </>
+                )}
                 </button>
 
                 {/* Google Sign In Button */}

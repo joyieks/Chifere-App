@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import shoppingGirl from '../../../assets/shoppinggirl.png';
 import { FiUser, FiShoppingCart, FiArrowLeft } from 'react-icons/fi';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useToast } from '../../../components/Toast';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
   const [step, setStep] = useState(1);
@@ -26,10 +29,13 @@ const Signup = () => {
     code: '',
     terms: false,
   });
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [passwordStrength, setPasswordStrength] = useState('');
   const [emailError, setEmailError] = useState('');
+  const { signup } = useAuth();
+  const { showToast } = useToast();
+  const navigate = useNavigate();
 
   // Password strength checker
   function getPasswordStrength(password) {
@@ -168,9 +174,23 @@ const Signup = () => {
             <h1 className="text-3xl font-bold text-gray-900 mb-4">{userType === 'buyer' ? 'Buyer Registration' : 'Seller Registration'}</h1>
             <form
               className="space-y-6 w-full"
-              onSubmit={e => {
+              onSubmit={async (e) => {
                 e.preventDefault();
-                setStep(3);
+                setLoading(true);
+                
+                try {
+                  const result = await signup(formData.email, formData.password, formData.firstName);
+                  if (result.success) {
+                    showToast('Registration successful! Please verify your email.', 'success');
+                    setStep(3);
+                  } else {
+                    showToast(result.error || 'Registration failed. Please try again.', 'error');
+                  }
+                } catch (error) {
+                  showToast('An error occurred. Please try again.', 'error');
+                } finally {
+                  setLoading(false);
+                }
               }}
             >
               {userType === 'buyer' ? (
@@ -399,10 +419,14 @@ const Signup = () => {
               )}
               <button
                 type="submit"
-                className={`w-full py-3 rounded-lg font-semibold transition ${userType === 'buyer' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-yellow-400 text-yellow-900 hover:bg-yellow-300'}`}
-                disabled={!formData.terms || passwordError || emailError || passwordStrength === 'Weak'}
+                disabled={!formData.terms || passwordError || emailError || passwordStrength === 'Weak' || loading}
+                className={`w-full py-3 rounded-lg font-semibold transition flex items-center justify-center space-x-2 ${userType === 'buyer' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-yellow-400 text-yellow-900 hover:bg-yellow-300'} disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                Register
+                {loading ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+                ) : (
+                  'Register'
+                )}
               </button>
             </form>
           </motion.div>

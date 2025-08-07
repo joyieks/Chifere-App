@@ -1,0 +1,133 @@
+✅ Final App Screen Structure (Grouped by Role & Feature)
+🔄 Shared Screens (Available to Both Buyer & Seller)
+These are universal and help both roles interact:
+
+Login / Sign Up
+
+Home
+
+Search / Categories
+
+Messages / Chat – Includes:
+
+In-app negotiation
+
+Send/accept barter deals
+
+Attachment (item image or offer proof)
+
+Barter Offers – Manage incoming/outgoing barter proposals
+
+Ratings & Reviews – Leave and view reviews after a transaction
+
+Profile / Settings
+
+Notifications
+
+Support / Help Center
+
+🛒 Buyer Screens
+1. Buyer Dashboard
+Personalized feed, suggested items, barter suggestions.
+
+2. Marketplace / Browse
+Items for sale and barter. Filter by category, price, or trade availability.
+
+3. Item Details
+View product info, price, barter option, seller rating, and reviews.
+
+4. Wishlist
+Save items for later.
+
+5. Checkout Page
+Quantity selector
+
+Notes to seller
+
+Shipping Information Input
+
+Payment Options: GCash, COD, Debit/Credit, etc.
+
+6. Shipping Updates
+Track shipping status (Pending, Shipped, In-Transit, Delivered)
+
+Push notifications for each update
+
+7. My Orders
+List of completed & active purchases/barter exchanges.
+
+8. Ratings & Reviews Submission
+After delivery, rate the seller & item quality.
+
+🧾 Seller Screens
+1. Seller Dashboard
+Overview: listed items, pending sales, incoming barters.
+
+2. Add Item
+Sell or Barter option
+
+Add images, description, price, trade item preference (if barter)
+
+Set shipping options
+
+3. My Listings
+Manage items (Edit/Delete)
+
+4. Incoming Orders & Barter Requests
+Accept/Reject orders or trade offers.
+Includes buyer info, shipping destination.
+
+5. Shipping Management
+Mark item as shipped
+
+Add tracking info
+
+View order status
+
+6. My Sales / Transactions
+Track earnings, sales history.
+
+7. Wallet / Payment
+View earnings
+
+Transfer to bank or e-wallet
+
+Payment setup
+
+8. Ratings & Reviews Viewer
+See feedback from buyers.
+
+⚙️ Optional Utility Features
+Role Switcher: Buyer ↔ Seller toggle
+
+In-App Barter History: Summary of all trades
+
+In-App Reporting System: Report users or items
+
+Shipping Calculator API (Optional): Estimate shipping fees per region
+
+📲 Example Tab Navigation (Bottom Bar)
+Buyer:
+
+🏠 Home
+
+🛒 Marketplace
+
+📦 My Orders
+
+💬 Messages
+
+👤 Profile
+
+Seller:
+
+📊 Dashboard
+
+➕ Add Item
+
+📋 My Listings
+
+💬 Messages
+
+👤 Profile
+
