@@ -15,28 +15,31 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing user session
-    const savedUser = localStorage.getItem('chifere_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
+    // For development/testing: clear any existing user session
+    // This ensures users start as unauthenticated
+    localStorage.removeItem('chifere_user');
     setLoading(false);
   }, []);
 
   const login = async (email, password) => {
     try {
       // Simulate API call - replace with actual authentication
-      const mockUser = {
-        id: 1,
-        email,
-        name: 'John Doe',
-        role: 'buyer',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'
-      };
-      
-      setUser(mockUser);
-      localStorage.setItem('chifere_user', JSON.stringify(mockUser));
-      return { success: true };
+      // For testing: only allow specific credentials
+      if (email === 'test@gmail.com' && password === '123456') {
+        const mockUser = {
+          id: 1,
+          email,
+          name: 'John Doe',
+          role: 'buyer',
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'
+        };
+        
+        setUser(mockUser);
+        localStorage.setItem('chifere_user', JSON.stringify(mockUser));
+        return { success: true };
+      } else {
+        return { success: false, error: 'Invalid email or password' };
+      }
     } catch (error) {
       return { success: false, error: error.message };
     }
