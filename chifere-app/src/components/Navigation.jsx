@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiShoppingCart, FiHeart, FiUser, FiLogOut, FiMenu, FiX, FiBell, FiPhone, FiSearch } from 'react-icons/fi';
+import { FiShoppingCart, FiHeart, FiUser, FiLogOut, FiMenu, FiX, FiBell, FiPhone } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from './Toast';
 import theme from '../styles/designSystem';
+import SearchAutocomplete from './SearchAutocomplete';
 
 const Navigation = ({ showPromotionalBar = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const { user, logout } = useAuth();
   const { getCartCount } = useCart();
   const { showToast } = useToast();
@@ -22,11 +22,9 @@ const Navigation = ({ showPromotionalBar = false }) => {
     navigate('/');
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
+  const handleSuggestionSelected = (suggestion) => {
+    // Custom handling for suggestion selection if needed
+    // The SearchAutocomplete component already handles navigation by default
   };
 
   const isActive = (path) => location.pathname === path;
@@ -78,18 +76,10 @@ const Navigation = ({ showPromotionalBar = false }) => {
 
           {/* Search Bar */}
           <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <form onSubmit={handleSearch} className="w-full">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for products, brands, or categories..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              </div>
-            </form>
+            <SearchAutocomplete 
+              onSuggestionSelected={handleSuggestionSelected}
+              className="w-full"
+            />
           </div>
 
           {/* Desktop Navigation */}
@@ -210,18 +200,10 @@ const Navigation = ({ showPromotionalBar = false }) => {
         >
           {/* Mobile Search Bar */}
           <div className="px-4 py-4 border-b border-gray-200">
-            <form onSubmit={handleSearch} className="w-full">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for products, brands, or categories..."
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              </div>
-            </form>
+            <SearchAutocomplete 
+              onSuggestionSelected={handleSuggestionSelected}
+              className="w-full"
+            />
           </div>
           
           <div className="px-4 py-2 space-y-1">

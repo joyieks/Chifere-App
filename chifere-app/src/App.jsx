@@ -28,6 +28,7 @@ const SearchResult = lazy(() => import('./components/pages/Shared/SearchItem/Sea
 const Checkout = lazy(() => import('./components/pages/Buyer/Buyer_Menu/Buyer_UserPage/MyPurchase/Checkout.jsx'));
 const BStore = lazy(() => import('./components/pages/Buyer/Buyer_Store/BStore.jsx'));
 const BStore_Items = lazy(() => import('./components/pages/Buyer/Buyer_Store/BStore_Items.jsx'));
+const StorePage = lazy(() => import('./components/pages/Buyer/BuyerStore/StorePage.jsx'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -154,7 +155,15 @@ function AppRoutes() {
           path="/buyer/store" 
           element={
             <ProtectedRoute>
-              <BStore />
+              <StorePage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/buyer/store/:storeId" 
+          element={
+            <ProtectedRoute>
+              <StorePage />
             </ProtectedRoute>
           } 
         />
@@ -164,6 +173,12 @@ function AppRoutes() {
             <ProtectedRoute>
               <BStore_Items />
             </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/store/:storeId" 
+          element={
+            <StorePage />
           } 
         />
         
