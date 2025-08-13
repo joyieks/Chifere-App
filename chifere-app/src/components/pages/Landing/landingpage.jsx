@@ -112,138 +112,10 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Top Promotional Bar */}
-      <div className="bg-blue-800 text-white py-2 px-6">
-        <div className="container mx-auto flex justify-between items-center text-sm">
-          <div className="flex items-center space-x-2">
-            <FiPhone size={14} />
-            <span>University of Cebu Banilad</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <span>Get 50% Off on Selected Items</span>
-            <a href="#" className="underline hover:no-underline">Shop Now</a>
-          </div>
-          <div className="flex items-center space-x-4">
-            <select className="bg-transparent border-none text-white text-sm focus:outline-none">
-              <option>Eng</option>
-            </select>
-            <select className="bg-transparent border-none text-white text-sm focus:outline-none">
-              <option>Location</option>
-            </select>
-          </div>
-        </div>
-      </div>
+      {/* Use our unified Navigation component */}
+      <Navigation showPromotionalBar={true} />
 
-      {/* Main Navigation Bar */}
-      <nav className="bg-white shadow-sm py-4 px-6 sticky top-0 z-50">
-        <div className="container mx-auto flex justify-between items-center">
-          {/* Logo */}
-          <motion.div 
-            className="flex items-center space-x-2 text-2xl font-bold text-blue-800"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <img src="/chiflogo.png" alt="Chifere Logo" className="w-10 h-10 object-contain" />
-            <span>ChiFere Cebu</span>
-          </motion.div>
-          
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            <div className="relative">
-              <button 
-                className="flex items-center text-gray-700 hover:text-blue-800 transition bg-gray-100 border border-gray-300 rounded-full px-4 py-2 shadow-sm"
-                onClick={() => navigate('/login')}
-                type="button"
-              >
-                <span>Categories</span>
-                <FiChevronDown className="ml-0.5 -mr-1" />
-              </button>
-            </div>
-            <button 
-              className="text-gray-700 hover:text-blue-800 transition bg-gray-100 border border-gray-300 rounded-full px-4 py-2 shadow-sm"
-              onClick={() => navigate('/login')}
-            >
-              Barter Items
-            </button>
-          </div>
 
-          {/* Search Bar */}
-          <div className="flex-1 max-w-md mx-8">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search Product"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    navigate('/login');
-                  }
-                }}
-              />
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-              <button
-                onClick={() => navigate('/login')}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-600 hover:text-blue-800"
-              >
-                Search
-              </button>
-            </div>
-          </div>
-
-          {/* User Actions */}
-          <div className="flex items-center space-x-6">
-            <button
-              className="flex items-center space-x-2 text-gray-700 hover:text-blue-800 transition focus:outline-none"
-              onClick={() => navigate('/login')}
-            >
-              <FiBell size={24} />
-              <span className="hidden sm:inline font-semibold">Notifications</span>
-            </button>
-            <button
-              className="flex items-center space-x-2 text-gray-700 hover:text-blue-800 transition focus:outline-none"
-              onClick={() => navigate('/login')}
-            >
-              <FiHeart size={24} />
-              <span className="hidden sm:inline font-semibold">Wishlists</span>
-            </button>
-            <button 
-              className="flex items-center space-x-1 text-gray-700 hover:text-blue-800 transition" 
-              onClick={() => navigate('/login')}
-            >
-              <FiShoppingCart size={20} />
-              <span className="relative hidden sm:inline">
-                Cart
-                <span className="absolute -top-3 -right-4 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  3
-                </span>
-              </span>
-            </button>
-            {user ? (
-              <button
-                className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition focus:outline-none"
-                onClick={() => {
-                  logout();
-                  showToast('Logged out successfully', 'success');
-                }}
-              >
-                <FiLogOut size={24} />
-                <span className="hidden sm:inline font-semibold">Logout</span>
-              </button>
-            ) : (
-              <button
-                className="flex items-center space-x-2 text-gray-700 hover:text-blue-800 transition focus:outline-none"
-                onClick={() => navigate('/login')}
-              >
-                <FiUser size={24} />
-                <span className="hidden sm:inline font-semibold">Profile</span>
-              </button>
-            )}
-          </div>
-        </div>
-      </nav>
 
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white">
@@ -265,9 +137,9 @@ const LandingPage = () => {
                   placeholder="Search for products, brands, or categories..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-6 py-4 pl-14 pr-16 rounded-2xl text-gray-800 text-lg focus:outline-none focus:ring-4 focus:ring-white/30 shadow-2xl"
+                  className="w-full px-6 py-4 pl-14 pr-16 rounded-2xl text-gray-800 text-lg bg-white border border-white/70 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/40 shadow-2xl"
                 />
-                <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <button 

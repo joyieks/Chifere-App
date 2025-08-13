@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import BuyerLayout from '../Buyer_Menu/Buyer_Layout/Buyer_layout';
+import theme from '../../../../styles/designSystem';
 
 const storeData = {
   1: {
@@ -281,7 +283,8 @@ const BStore_Items = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <BuyerLayout>
+      <div className="min-h-screen" style={{ backgroundColor: theme.colors.background.accent }}>
       {/* Store Header Bar */}
       <div className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -758,7 +761,8 @@ const BStore_Items = () => {
           to { opacity: 1; }
         }
       `}</style>
-    </div>
+      </div>
+    </BuyerLayout>
   );
 };
 

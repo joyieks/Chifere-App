@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiSearch, FiShoppingCart, FiHeart, FiUser, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
+import { FiShoppingCart, FiHeart, FiUser, FiLogOut, FiMenu, FiX, FiBell, FiPhone } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from './Toast';
+import theme from '../styles/designSystem';
 
-const Navigation = () => {
+const Navigation = ({ showPromotionalBar = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const { user, logout } = useAuth();
   const { getCartCount } = useCart();
   const { showToast } = useToast();
@@ -21,40 +21,52 @@ const Navigation = () => {
     navigate('/');
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
-
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <div className="w-full">
+      {/* Promotional Bar */}
+      {showPromotionalBar && (
+        <div style={{ backgroundColor: theme.colors.primary[800] }} className="text-white py-2 px-6">
+          <div className="container mx-auto flex justify-between items-center text-sm">
+            <div className="flex items-center space-x-2">
+              <FiPhone size={14} />
+              <span>University of Cebu Banilad</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <span>Get 50% Off on Selected Items</span>
+              <Link to="/buyer/dashboard" className="underline hover:no-underline">Shop Now</Link>
+            </div>
+            <div className="flex items-center space-x-4">
+              <select 
+                className="bg-transparent border-none text-white text-sm focus:outline-none"
+                style={{ backgroundColor: 'transparent' }}
+              >
+                <option value="en">Eng</option>
+              </select>
+              <select 
+                className="bg-transparent border-none text-white text-sm focus:outline-none"
+                style={{ backgroundColor: 'transparent' }}
+              >
+                <option value="cebu">Cebu</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Navigation */}
+      <nav className="bg-white shadow-md sticky top-0" style={{ zIndex: theme.zIndex.sticky }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center" style={{ height: theme.components.navigation.height }}>
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <img src="/chiflogo.png" alt="Chifere" className="h-8 w-8" />
             <span className="text-xl font-bold text-gray-900">Chifere</span>
           </Link>
 
-          {/* Desktop Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <form onSubmit={handleSearch} className="w-full">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              </div>
-            </form>
-          </div>
+          {/* Spacer for navigation layout */}
+          <div className="hidden md:flex flex-1"></div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
@@ -68,19 +80,37 @@ const Navigation = () => {
                 >
                   Dashboard
                 </Link>
+                
+                {/* Notifications */}
+                <Link
+                  to="/buyer/notifications"
+                  className="text-gray-700 hover:text-blue-600 transition-colors relative flex items-center space-x-1"
+                >
+                  <FiBell className="w-5 h-5" />
+                  <span className="hidden lg:block text-sm">Notifications</span>
+                </Link>
+
+                {/* Wishlist */}
                 <Link
                   to="/buyer/wishlist"
-                  className="text-gray-700 hover:text-red-500 transition-colors relative"
+                  className="text-gray-700 hover:text-red-500 transition-colors relative flex items-center space-x-1"
                 >
-                  <FiHeart className="w-6 h-6" />
+                  <FiHeart className="w-5 h-5" />
+                  <span className="hidden lg:block text-sm">Wishlist</span>
                 </Link>
+
+                {/* Cart */}
                 <Link
                   to="/buyer/cart"
-                  className="text-gray-700 hover:text-blue-600 transition-colors relative"
+                  className="text-gray-700 hover:text-blue-600 transition-colors relative flex items-center space-x-1"
                 >
-                  <FiShoppingCart className="w-6 h-6" />
+                  <FiShoppingCart className="w-5 h-5" />
+                  <span className="hidden lg:block text-sm">Cart</span>
                   {getCartCount() > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    <span 
+                      className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                      style={{ backgroundColor: theme.colors.error[500] }}
+                    >
                       {getCartCount()}
                     </span>
                   )}
@@ -152,21 +182,7 @@ const Navigation = () => {
           </div>
         </div>
 
-        {/* Mobile Search Bar */}
-        <div className="md:hidden pb-4">
-          <form onSubmit={handleSearch}>
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            </div>
-          </form>
-        </div>
+
       </div>
 
       {/* Mobile Navigation Menu */}
@@ -253,7 +269,8 @@ const Navigation = () => {
           </div>
         </motion.div>
       )}
-    </nav>
+      </nav>
+    </div>
   );
 };
 

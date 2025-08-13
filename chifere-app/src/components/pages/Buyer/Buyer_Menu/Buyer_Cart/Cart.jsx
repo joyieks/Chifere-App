@@ -1,7 +1,38 @@
+/**
+ * Cart Page Component
+ * 
+ * This component follows the ChiFere design system established in /styles/designSystem.js
+ * 
+ * Design System Usage:
+ * - Colors: Uses theme.colors tokens for consistent branding
+ * - Typography: Applies theme.typography for font sizes and weights
+ * - Spacing: Uses theme.spacing for consistent margins and padding
+ * - Shadows: Applies theme.shadows for card elevation
+ * - Border Radius: Uses theme.borderRadius for consistent corners
+ * - Animations: Uses theme.animations for smooth transitions
+ * - Components: Leverages theme.components for button and card styling
+ * 
+ * Key Features:
+ * - Modern card-based design consistent with Landing/Wishlist/Checkout pages
+ * - Fully responsive design using Tailwind breakpoints
+ * - Interactive elements with hover states and animations
+ * - Separate handling for Preloved and Barter items
+ * - Proper focus states for accessibility
+ * 
+ * Firebase Integration Notes:
+ * - Demo cart data marked with TODO comments for Firebase implementation
+ * - Cart state will be synchronized with Firestore
+ * - Store messaging will connect to Firebase messaging service
+ * 
+ * @version 2.0.0 - Complete redesign using design system
+ */
+
 import React, { useState } from 'react';
 import BuyerLayout from '../Buyer_Layout/Buyer_layout';
+import theme from '../../../../../styles/designSystem';
 
-// Sample cart items grouped by store and type
+// TODO: Firebase Implementation - Replace with real cart data from Firestore
+// This demo data should be replaced with actual cart items from the database
 const initialPrelovedCart = [
   {
     store: 'Brilliant Channel',
@@ -17,6 +48,7 @@ const initialPrelovedCart = [
   },
 ];
 
+// TODO: Firebase Implementation - Replace with real barter cart data
 const initialBarterCart = [
   {
     store: 'Barter Store',
@@ -35,20 +67,38 @@ const initialBarterCart = [
 
 const CartSection = ({ title, cart, selected, setSelected, handleRemove, handleSelectAll, handleSelect, allSelected, total, isBarter }) => (
   <div className="mb-8">
-    <h3 className="text-xl font-bold text-blue-800 mb-2">{title}</h3>
-    <div className="bg-white rounded shadow p-4 mb-4">
-      <div className="flex items-center border-b pb-2 mb-2">
-        <input type="checkbox" checked={allSelected} onChange={handleSelectAll} className="mr-2" />
-        <span className="font-semibold flex-1">Product</span>
-        <span className="w-32 text-center">Unit Price</span>
-        <span className="w-24 text-center">Quantity</span>
-        <span className="w-32 text-center">Total Price</span>
-        <span className="w-24 text-center">Actions</span>
-      </div>
+    {/* Section Header */}
+    <h3 
+      className="text-2xl font-bold mb-6"
+      style={{ color: theme.colors.gray[800] }}
+    >
+      {title}
+    </h3>
+
+    {/* Items Container */}
+    <div 
+      className="overflow-hidden mb-6"
+      style={{
+        backgroundColor: theme.colors.white,
+        borderRadius: theme.borderRadius['2xl'],
+        boxShadow: theme.shadows.lg,
+        border: `1px solid ${theme.colors.gray[200]}`
+      }}
+    >
       {cart.map((store, storeIdx) => (
-        <div key={store.store} className="mb-4 border rounded p-2 bg-blue-50">
-          <div className="flex items-center mb-2">
-            <input type="checkbox"
+        <div key={store.store} className="border-b last:border-b-0" style={{ borderColor: theme.colors.gray[100] }}>
+          {/* Store Header */}
+          <div 
+            className="p-6 border-b"
+            style={{ 
+              backgroundColor: theme.colors.primary[50],
+              borderColor: theme.colors.gray[200]
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <input 
+                  type="checkbox"
               checked={store.items.every(item => selected[item.id])}
               onChange={() => {
                 const allChecked = store.items.every(item => selected[item.id]);
@@ -58,45 +108,255 @@ const CartSection = ({ title, cart, selected, setSelected, handleRemove, handleS
                   return newSel;
                 });
               }}
-              className="mr-2" />
-            <span className="font-semibold text-gray-700">{store.store}</span>
-            <button className="ml-4 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium transition">Message</button>
-          </div>
-          {store.items.map(item => (
-            <div key={item.id} className="flex items-center border-t py-3">
-              <input type="checkbox" checked={!!selected[item.id]} onChange={() => handleSelect(item.id)} className="mr-2" />
-              <img src={item.image} alt={item.name} className="w-24 h-24 object-cover rounded mr-4" />
-              <div className="flex-1">
-                <div className="font-semibold text-gray-800">{item.name}</div>
+                  className="w-5 h-5 rounded"
+                  style={{ accentColor: theme.colors.primary[600] }}
+                />
+                <span 
+                  className="text-lg font-semibold"
+                  style={{ color: theme.colors.gray[800] }}
+                >
+                  {store.store}
+                </span>
               </div>
-              <div className="w-32 text-center">
-                {isBarter ? <span className="text-lg font-bold text-blue-600">Barter Only</span> : <span className="text-lg font-bold text-gray-800">₱{item.price.toLocaleString()}</span>}
-              </div>
-              <div className="w-24 text-center flex items-center justify-center">
-                <button className="px-2" disabled>-</button>
-                <span className="mx-2">{item.quantity}</span>
-                <button className="px-2" disabled>+</button>
-              </div>
-              <div className="w-32 text-center font-bold text-blue-800">{isBarter ? 'Barter Only' : `₱${(item.price * item.quantity).toLocaleString()}`}</div>
-              <div className="w-24 text-center">
-                <button className="text-red-500 hover:underline" onClick={() => handleRemove(storeIdx, item.id)}>Delete</button>
-              </div>
+              <button 
+                className="px-4 py-2 rounded-xl font-medium transition-all duration-200"
+                style={{
+                  backgroundColor: theme.colors.primary[600],
+                  color: theme.colors.white
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = theme.colors.primary[700];
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = theme.colors.primary[600];
+                }}
+              >
+                💬 Message Store
+              </button>
             </div>
-          ))}
+          </div>
+
+          {/* Store Items */}
+          <div className="space-y-0">
+            {store.items.map((item, itemIdx) => (
+              <div 
+                key={item.id} 
+                className="p-6 border-b last:border-b-0 transition-all duration-200"
+                style={{ borderColor: theme.colors.gray[100] }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = theme.colors.gray[50];
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = theme.colors.white;
+                }}
+              >
+                <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
+                  {/* Checkbox & Image */}
+                  <div className="flex items-center space-x-4">
+                    <input 
+                      type="checkbox" 
+                      checked={!!selected[item.id]} 
+                      onChange={() => handleSelect(item.id)} 
+                      className="w-5 h-5 rounded"
+                      style={{ accentColor: theme.colors.primary[600] }}
+                    />
+                    <img 
+                      src={item.image} 
+                      alt={item.name} 
+                      className="w-24 h-24 object-cover"
+                      style={{ borderRadius: theme.borderRadius.lg }}
+                    />
+                  </div>
+
+                  {/* Product Info */}
+                  <div className="flex-1 min-w-0">
+                    <h4 
+                      className="text-lg font-semibold mb-2 line-clamp-2"
+                      style={{ color: theme.colors.gray[800] }}
+                    >
+                      {item.name}
+                    </h4>
+                    
+                    {/* Price */}
+                    <div className="mb-3">
+                      {isBarter ? (
+                        <span 
+                          className="text-xl font-bold px-3 py-1 rounded-full"
+                          style={{ 
+                            backgroundColor: theme.colors.secondary[100],
+                            color: theme.colors.secondary[700]
+                          }}
+                        >
+                          🔄 Barter Only
+                        </span>
+                      ) : (
+                        <span 
+                          className="text-2xl font-bold"
+                          style={{ color: theme.colors.primary[600] }}
+                        >
+                          ₱{item.price.toLocaleString()}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Quantity Controls */}
+                    <div className="flex items-center space-x-3 mb-4">
+                      <span 
+                        className="text-sm font-medium"
+                        style={{ color: theme.colors.gray[600] }}
+                      >
+                        Quantity:
+                      </span>
+                      <div 
+                        className="flex items-center border rounded-lg"
+                        style={{ borderColor: theme.colors.gray[300] }}
+                      >
+                        <button 
+                          className="p-2 transition-colors duration-200"
+                          style={{ color: theme.colors.gray[400] }}
+                          disabled
+                        >
+                          −
+                        </button>
+                        <span 
+                          className="px-4 py-2 min-w-[3rem] text-center"
+                          style={{ color: theme.colors.gray[800] }}
+                        >
+                          {item.quantity}
+                        </span>
+                        <button 
+                          className="p-2 transition-colors duration-200"
+                          style={{ color: theme.colors.gray[400] }}
+                          disabled
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Total & Actions */}
+                  <div className="flex flex-col items-end space-y-4">
+                    <div className="text-right">
+                      <div 
+                        className="text-sm"
+                        style={{ color: theme.colors.gray[600] }}
+                      >
+                        Total
+                      </div>
+                      <div 
+                        className="text-xl font-bold"
+                        style={{ color: theme.colors.primary[600] }}
+                      >
+                        {isBarter ? 'Barter Only' : `₱${(item.price * item.quantity).toLocaleString()}`}
+                      </div>
+              </div>
+                    
+                    <button 
+                      className="px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                      style={{
+                        color: theme.colors.error[600],
+                        backgroundColor: 'transparent',
+                        border: `1px solid ${theme.colors.error[200]}`
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = theme.colors.error[50];
+                        e.target.style.borderColor = theme.colors.error[300];
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'transparent';
+                        e.target.style.borderColor = theme.colors.error[200];
+                      }}
+                      onClick={() => handleRemove(storeIdx, item.id)}
+                    >
+                      🗑️ Remove
+                    </button>
+              </div>
+              </div>
+              </div>
+            ))}
+            </div>
         </div>
       ))}
     </div>
-    <div className="flex items-center justify-between mt-4">
-      <div>
-        <input type="checkbox" checked={allSelected} onChange={handleSelectAll} className="mr-2" />
-        <span className="mr-4">Select All</span>
-        <button className="text-red-500 hover:underline" onClick={() => {
-          setSelected({});
-        }}>Delete</button>
+
+    {/* Section Footer */}
+    <div 
+      className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 rounded-2xl"
+      style={{
+        backgroundColor: theme.colors.gray[50],
+        border: `1px solid ${theme.colors.gray[200]}`
+      }}
+    >
+      {/* Bulk Actions */}
+      <div className="flex items-center space-x-4">
+        <label className="flex items-center space-x-2 cursor-pointer">
+          <input 
+            type="checkbox" 
+            checked={allSelected} 
+            onChange={handleSelectAll} 
+            className="w-5 h-5 rounded"
+            style={{ accentColor: theme.colors.primary[600] }}
+          />
+          <span 
+            className="font-medium"
+            style={{ color: theme.colors.gray[700] }}
+          >
+            Select All
+          </span>
+        </label>
+        <button 
+          className="px-4 py-2 rounded-lg font-medium transition-all duration-200"
+          style={{
+            color: theme.colors.error[600],
+            backgroundColor: 'transparent'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = theme.colors.error[50];
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent';
+          }}
+          onClick={() => setSelected({})}
+        >
+          🗑️ Delete Selected
+        </button>
       </div>
-      <div className="text-xl font-bold text-blue-900">
-        Total: <span className="text-blue-600">{isBarter ? 'Barter Only' : `₱${total.toLocaleString()}`}</span>
-        <button className="ml-6 px-8 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-bold">Check Out</button>
+
+      {/* Total & Checkout */}
+      <div className="flex items-center space-x-6">
+        <div className="text-right">
+          <div 
+            className="text-sm"
+            style={{ color: theme.colors.gray[600] }}
+          >
+            Total Amount
+          </div>
+          <div 
+            className="text-2xl font-bold"
+            style={{ color: theme.colors.primary[600] }}
+          >
+            {isBarter ? 'Barter Only' : `₱${total.toLocaleString()}`}
+          </div>
+        </div>
+        <button 
+          className="px-8 py-3 rounded-xl font-bold text-lg transition-all duration-200 transform hover:scale-105"
+          style={{
+            background: `linear-gradient(to right, ${theme.colors.primary[600]}, ${theme.colors.primary[500]})`,
+            color: theme.colors.white,
+            boxShadow: theme.shadows.lg
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = `linear-gradient(to right, ${theme.colors.primary[700]}, ${theme.colors.primary[600]})`;
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = `linear-gradient(to right, ${theme.colors.primary[600]}, ${theme.colors.primary[500]})`;
+          }}
+          // TODO: Firebase Implementation - Connect to checkout flow
+          onClick={() => console.log('Checkout clicked - implement navigation to checkout')}
+        >
+          🛒 Check Out
+        </button>
       </div>
     </div>
   </div>
@@ -172,44 +432,164 @@ const Cart = () => {
 
   return (
     <BuyerLayout>
-      <div className="container mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold mb-6 text-blue-800">My Cart</h2>
-        <div className="flex space-x-4 mb-8">
-          <button onClick={() => setTab('all')} className={`px-6 py-2 rounded font-semibold border ${tab === 'all' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-800 border-blue-200'} transition`}>All</button>
-          <button onClick={() => setTab('preloved')} className={`px-6 py-2 rounded font-semibold border ${tab === 'preloved' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-800 border-blue-200'} transition`}>Preloved Items</button>
-          <button onClick={() => setTab('barter')} className={`px-6 py-2 rounded font-semibold border ${tab === 'barter' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-800 border-blue-200'} transition`}>Barter Items</button>
+      <div className="min-h-screen" style={{ backgroundColor: theme.colors.background.accent }}>
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-6">
+          {/* Page Header */}
+          <div className="text-center mb-8">
+            <h1 
+              className="text-4xl md:text-5xl font-bold mb-4"
+              style={{
+                background: `linear-gradient(135deg, ${theme.colors.primary[600]} 0%, ${theme.colors.primary[500]} 100%)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              🛒 My Shopping Cart
+            </h1>
+            <p style={{ color: theme.colors.gray[600] }} className="text-lg">
+              Review and manage your selected items
+            </p>
+          </div>
+
+          {/* Tab Navigation */}
+          <div 
+            className="flex flex-col sm:flex-row gap-3 mb-8 p-2 rounded-2xl"
+            style={{
+              backgroundColor: theme.colors.white,
+              boxShadow: theme.shadows.lg,
+              border: `1px solid ${theme.colors.gray[200]}`
+            }}
+          >
+            {[
+              { key: 'all', label: '📦 All Items', count: prelovedCart.length + barterCart.length },
+              { key: 'preloved', label: '♻️ Preloved Items', count: prelovedCart.length },
+              { key: 'barter', label: '🔄 Barter Items', count: barterCart.length }
+            ].map((tabItem) => (
+              <button 
+                key={tabItem.key}
+                onClick={() => setTab(tabItem.key)} 
+                className="flex-1 px-6 py-3 rounded-xl font-semibold transition-all duration-200 relative"
+                style={{
+                  backgroundColor: tab === tabItem.key ? theme.colors.primary[600] : 'transparent',
+                  color: tab === tabItem.key ? theme.colors.white : theme.colors.gray[700],
+                  border: tab === tabItem.key ? 'none' : `1px solid transparent`
+                }}
+                onMouseEnter={(e) => {
+                  if (tab !== tabItem.key) {
+                    e.target.style.backgroundColor = theme.colors.gray[50];
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (tab !== tabItem.key) {
+                    e.target.style.backgroundColor = 'transparent';
+                  }
+                }}
+              >
+                <span className="flex items-center justify-center space-x-2">
+                  <span>{tabItem.label}</span>
+                  <span 
+                    className="px-2 py-1 rounded-full text-xs font-bold"
+                    style={{
+                      backgroundColor: tab === tabItem.key ? theme.colors.white : theme.colors.primary[100],
+                      color: tab === tabItem.key ? theme.colors.primary[600] : theme.colors.primary[700]
+                    }}
+                  >
+                    {tabItem.count}
+                  </span>
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Empty State */}
+          {prelovedCart.length === 0 && barterCart.length === 0 && (
+            <div className="text-center py-20">
+              <div 
+                className="w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-8"
+                style={{
+                  background: `linear-gradient(to bottom right, ${theme.colors.gray[100]}, ${theme.colors.gray[200]})`
+                }}
+              >
+                <span className="text-6xl">🛒</span>
+              </div>
+              <h3 
+                className="text-3xl font-bold mb-4"
+                style={{ color: theme.colors.gray[400] }}
+              >
+                Your cart is empty
+              </h3>
+              <p 
+                className="mb-8 text-lg"
+                style={{ color: theme.colors.gray[500] }}
+              >
+                Start adding items you love to your cart
+              </p>
+              <button 
+                onClick={() => window.location.href = '/buyer/dashboard'}
+                className="px-8 py-4 rounded-xl font-semibold transform hover:scale-105 text-lg transition-all duration-200"
+                style={{
+                  background: `linear-gradient(to right, ${theme.colors.primary[600]}, ${theme.colors.primary[500]})`,
+                  color: theme.colors.white,
+                  boxShadow: theme.shadows.lg
+                }}
+              >
+                🛍️ Start Shopping
+              </button>
         </div>
-        {(tab === 'all' || tab === 'preloved') && (
-          <CartSection
-            title="Preloved Items"
-            cart={prelovedCart}
-            selected={prelovedSelected}
-            setSelected={setPrelovedSelected}
-            handleRemove={handlePrelovedRemove}
-            handleSelectAll={handlePrelovedSelectAll}
-            handleSelect={handlePrelovedSelect}
-            allSelected={prelovedAllSelected}
-            total={prelovedTotal}
-            isBarter={false}
-          />
-        )}
-        {(tab === 'all' || tab === 'barter') && (
-          <CartSection
-            title="Barter Items"
-            cart={barterCart}
-            selected={barterSelected}
-            setSelected={setBarterSelected}
-            handleRemove={handleBarterRemove}
-            handleSelectAll={handleBarterSelectAll}
-            handleSelect={handleBarterSelect}
-            allSelected={barterAllSelected}
-            total={barterTotal}
-            isBarter={true}
-          />
-        )}
+          )}
+
+          {/* Cart Content */}
+          {(tab === 'all' || tab === 'preloved') && prelovedCart.length > 0 && (
+            <CartSection
+              title="♻️ Preloved Items"
+              cart={prelovedCart}
+              selected={prelovedSelected}
+              setSelected={setPrelovedSelected}
+              handleRemove={handlePrelovedRemove}
+              handleSelectAll={handlePrelovedSelectAll}
+              handleSelect={handlePrelovedSelect}
+              allSelected={prelovedAllSelected}
+              total={prelovedTotal}
+              isBarter={false}
+            />
+          )}
+          {(tab === 'all' || tab === 'barter') && barterCart.length > 0 && (
+            <CartSection
+              title="🔄 Barter Items"
+              cart={barterCart}
+              selected={barterSelected}
+              setSelected={setBarterSelected}
+              handleRemove={handleBarterRemove}
+              handleSelectAll={handleBarterSelectAll}
+              handleSelect={handleBarterSelect}
+              allSelected={barterAllSelected}
+              total={barterTotal}
+              isBarter={true}
+            />
+          )}
+        </div>
       </div>
     </BuyerLayout>
   );
 };
 
 export default Cart;
+
+// Add line-clamp styles
+const styles = `
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.type = 'text/css';
+  styleSheet.innerText = styles;
+  document.head.appendChild(styleSheet);
+}

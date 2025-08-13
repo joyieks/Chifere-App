@@ -1,0 +1,147 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if request.auth != null && request.auth.uid == userId;
+      // Users can update their own profile
+      allow update: if request.auth != null && request.auth.uid == userId;
+      // Users can create their own profile during registration
+      allow create: if request.auth != null && request.auth.uid == userId;
+      // Users cannot delete their profile
+      allow delete: if false;
+    }
+
+    // Items collection
+    match /items/{itemId} {
+      // Anyone can read active items
+      allow read: if resource.data.status == 'active';
+      // Only authenticated users can read all items
+      allow read: if request.auth != null;
+      // Only sellers can create items
+      allow create: if request.auth != null && 
+        request.auth.uid == resource.data.sellerId;
+      // Only sellers can update their own items
+      allow update: if request.auth != null && 
+        request.auth.uid == resource.data.sellerId;
+      // Only sellers can delete their own items
+      allow delete: if request.auth != null && 
+        request.auth.uid == resource.data.sellerId;
+    }
+
+    // Conversations collection
+    match /conversations/{conversationId} {
+      // Only participants can read conversations
+      allow read: if request.auth != null && 
+        request.auth.uid in resource.data.participants;
+      // Only participants can create conversations
+      allow create: if request.auth != null && 
+        request.auth.uid in request.resource.data.participants;
+      // Only participants can update conversations
+      allow update: if request.auth != null && 
+        request.auth.uid in resource.data.participants;
+      // Only participants can delete conversations
+      allow delete: if request.auth != null && 
+        request.auth.uid in resource.data.participants;
+    }
+
+    // Messages collection
+    match /messages/{messageId} {
+      // Only conversation participants can read messages
+      allow read: if request.auth != null && 
+        request.auth.uid in get(/databases/$(database)/documents/conversations/$(resource.data.conversationId)).data.participants;
+      // Only conversation participants can create messages
+      allow create: if request.auth != null && 
+        request.auth.uid in get(/databases/$(database)/documents/conversations/$(request.resource.data.conversationId)).data.participants;
+      // Only message sender can update their messages
+      allow update: if request.auth != null && 
+        request.auth.uid == resource.data.senderId;
+      // Only message sender can delete their messages
+      allow delete: if request.auth != null && 
+        request.auth.uid == resource.data.senderId;
+    }
+
+    // Notifications collection
+    match /notifications/{notificationId} {
+      // Users can only read their own notifications
+      allow read: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
+      // Users can only create notifications for themselves
+      allow create: if request.auth != null && 
+        request.auth.uid == request.resource.data.userId;
+      // Users can only update their own notifications
+      allow update: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
+      // Users can only delete their own notifications
+      allow delete: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
+    }
+
+    // Categories collection (for item categories)
+    match /categories/{categoryId} {
+      // Anyone can read categories
+      allow read: if true;
+      // Only admins can modify categories (implement admin check)
+      allow write: if false;
+    }
+
+    // Reviews collection
+    match /reviews/{reviewId} {
+      // Anyone can read reviews
+      allow read: if true;
+      // Only authenticated users can create reviews
+      allow create: if request.auth != null;
+      // Only review author can update their review
+      allow update: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
+      // Only review author can delete their review
+      allow delete: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
+    }
+
+    // Transactions collection
+    match /transactions/{transactionId} {
+      // Users can only read their own transactions
+      allow read: if request.auth != null && 
+        (request.auth.uid == resource.data.buyerId || 
+         request.auth.uid == resource.data.sellerId);
+      // Only authenticated users can create transactions
+      allow create: if request.auth != null;
+      // Only transaction participants can update transactions
+      allow update: if request.auth != null && 
+        (request.auth.uid == resource.data.buyerId || 
+         request.auth.uid == resource.data.sellerId);
+      // Transactions cannot be deleted
+      allow delete: if false;
+    }
+
+    // Barter requests collection
+    match /barterRequests/{requestId} {
+      // Users can only read barter requests they're involved in
+      allow read: if request.auth != null && 
+        (request.auth.uid == resource.data.buyerId || 
+         request.auth.uid == resource.data.sellerId);
+      // Only authenticated users can create barter requests
+      allow create: if request.auth != null;
+      // Only involved users can update barter requests
+      allow update: if request.auth != null && 
+        (request.auth.uid == resource.data.buyerId || 
+         request.auth.uid == resource.data.sellerId);
+      // Only involved users can delete barter requests
+      allow delete: if request.auth != null && 
+        (request.auth.uid == resource.data.buyerId || 
+         request.auth.uid == resource.data.sellerId);
+    }
+
+    // System settings collection (admin only)
+    match /systemSettings/{settingId} {
+      // Only admins can read system settings
+      allow read: if false;
+      // Only admins can modify system settings
+      allow write: if false;
+    }
+  }
+}
+
+

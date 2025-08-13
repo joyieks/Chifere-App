@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import BuyerLayout from '../Buyer_Menu/Buyer_Layout/Buyer_layout';
+import theme from '../../../../styles/designSystem';
 
 const storeData = {
   1: {
@@ -113,7 +115,8 @@ const BStore = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <BuyerLayout>
+      <div className="min-h-screen" style={{ backgroundColor: theme.colors.background.accent }}>
       {/* Store Header */}
       <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/30"></div>
@@ -452,7 +455,8 @@ const BStore = () => {
           overflow: hidden;
         }
       `}</style>
-    </div>
+      </div>
+    </BuyerLayout>
   );
 };
 
