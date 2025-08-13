@@ -12,7 +12,6 @@ const LandingPage = () => {
   const { addToCart } = useCart();
   const { showToast } = useToast();
   const { user, logout } = useAuth();
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showCategories, setShowCategories] = useState(false);
 
@@ -46,7 +45,7 @@ const LandingPage = () => {
       name: 'iPhone 12 Pro Max',
       price: 45000,
       originalPrice: 60000,
-      image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500',
+      image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500',
       seller: 'Tech Store',
       rating: 4.9,
       reviews: 89,
@@ -59,7 +58,7 @@ const LandingPage = () => {
       id: 3,
       name: 'Vintage Leather Jacket',
       price: 0,
-      image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500',
+      image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500',
       seller: 'Fashion Hub',
       rating: 4.7,
       reviews: 56,
@@ -73,7 +72,7 @@ const LandingPage = () => {
       name: 'Gaming Laptop',
       price: 35000,
       originalPrice: 45000,
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500',
+      image: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=500',
       seller: 'Gaming World',
       rating: 4.6,
       reviews: 78,
@@ -82,14 +81,118 @@ const LandingPage = () => {
       condition: 'Very Good',
       isBarter: false,
     },
+    {
+      id: 5,
+      name: 'Samsung Galaxy Watch 4',
+      price: 12990,
+      originalPrice: 15000,
+      image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500',
+      seller: 'Gadget Central',
+      rating: 4.4,
+      reviews: 67,
+      discount: 13,
+      category: 'electronics',
+      condition: 'Excellent',
+      isBarter: false,
+    },
+    {
+      id: 6,
+      name: 'MacBook Pro 13" M2',
+      price: 68990,
+      originalPrice: 75000,
+      image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500',
+      seller: 'Apple Store PH',
+      rating: 4.8,
+      reviews: 98,
+      discount: 8,
+      category: 'electronics',
+      condition: 'Like New',
+      isBarter: false,
+    },
+    {
+      id: 7,
+      name: 'Antique Wooden Chair',
+      price: 0,
+      image: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=500',
+      seller: 'Vintage Finds',
+      rating: 4.5,
+      reviews: 23,
+      category: 'furniture',
+      condition: 'Good',
+      isBarter: true,
+      barterFor: 'Vintage Books or Records',
+    },
+    {
+      id: 8,
+      name: 'Nike Air Jordan 1 Retro',
+      price: 8500,
+      originalPrice: 12000,
+      image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500',
+      seller: 'Sneaker Head',
+      rating: 4.7,
+      reviews: 156,
+      discount: 29,
+      category: 'fashion',
+      condition: 'Very Good',
+      isBarter: false,
+    },
+    {
+      id: 9,
+      name: 'Guitar Acoustic Yamaha',
+      price: 0,
+      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500',
+      seller: 'Music Store',
+      rating: 4.6,
+      reviews: 34,
+      category: 'music',
+      condition: 'Good',
+      isBarter: true,
+      barterFor: 'Electric Guitar or Piano',
+    },
+    {
+      id: 10,
+      name: 'Sony WH-1000XM4 Headphones',
+      price: 15990,
+      originalPrice: 18000,
+      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500',
+      seller: 'Tech Store PH',
+      rating: 4.7,
+      reviews: 156,
+      discount: 11,
+      category: 'electronics',
+      condition: 'Excellent',
+      isBarter: false,
+    },
+    {
+      id: 11,
+      name: 'Vintage Camera Collection',
+      price: 0,
+      image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500',
+      seller: 'Collector\'s Corner',
+      rating: 4.8,
+      reviews: 12,
+      category: 'collectibles',
+      condition: 'Good',
+      isBarter: true,
+      barterFor: 'Vintage Watches or Coins',
+    },
+    {
+      id: 12,
+      name: 'Adidas Ultraboost 21',
+      price: 6500,
+      originalPrice: 9500,
+      image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500',
+      seller: 'Sports Hub',
+      rating: 4.5,
+      reviews: 89,
+      discount: 32,
+      category: 'fashion',
+      condition: 'Very Good',
+      isBarter: false,
+    },
   ];
 
-  const quickActions = [
-    { name: 'My Orders', icon: '📦', path: '/login', color: 'blue' },
-    { name: 'Wishlist', icon: '❤️', path: '/login', color: 'red' },
-    { name: 'Messages', icon: '💬', path: '/login', color: 'green' },
-    { name: 'Notifications', icon: '🔔', path: '/login', color: 'purple' },
-  ];
+
 
   const handleProductClick = (product) => {
     navigate('/login');
@@ -105,10 +208,7 @@ const LandingPage = () => {
     navigate('/login');
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    navigate('/login');
-  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -122,34 +222,12 @@ const LandingPage = () => {
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-6 py-16">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
-              Welcome to Chifere
-            </h1>
+                          <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
+                Welcome to <span style={{ color: '#3B82F6' }}>ChiFere</span><span style={{ color: '#10B981' }}> Cebu</span>
+              </h1>
             <p className="text-xl md:text-2xl mb-8 text-blue-100 animate-slide-up">
               Discover amazing preloved items and barter opportunities
             </p>
-            
-            {/* Search Bar */}
-            <div className="max-w-2xl mx-auto relative animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <form onSubmit={handleSearch} className="relative">
-                <input
-                  type="text"
-                  placeholder="Search for products, brands, or categories..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-6 py-4 pl-14 pr-16 rounded-2xl text-gray-800 text-lg bg-white border border-white/70 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/40 shadow-2xl"
-                />
-                <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <button 
-                  type="submit"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold"
-                >
-                  Search
-                </button>
-              </form>
-            </div>
           </div>
         </div>
         
@@ -162,28 +240,6 @@ const LandingPage = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Quick Actions */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Quick Actions</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {quickActions.map((action, index) => (
-              <button
-                key={action.name}
-                onClick={() => navigate(action.path)}
-                className={`group p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100 animate-slide-up`}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-${action.color}-400 to-${action.color}-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-200`}>
-                  {action.icon}
-                </div>
-                <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">
-                  {action.name}
-                </h3>
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Categories */}
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Browse Categories</h2>

@@ -74,15 +74,16 @@ export const ToastProvider = ({ children }) => {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="fixed top-4 right-4 z-50">
+      <div className="fixed top-4 right-4 z-[9999] pointer-events-none">
         <AnimatePresence>
           {toasts.map(toast => (
-            <Toast
-              key={toast.id}
-              message={toast.message}
-              type={toast.type}
-              onClose={() => removeToast(toast.id)}
-            />
+            <div key={toast.id} className="pointer-events-auto">
+              <Toast
+                message={toast.message}
+                type={toast.type}
+                onClose={() => removeToast(toast.id)}
+              />
+            </div>
           ))}
         </AnimatePresence>
       </div>

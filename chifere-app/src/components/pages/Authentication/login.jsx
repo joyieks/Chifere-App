@@ -61,8 +61,11 @@ import { useToast } from '../../../components/Toast';
         try {
             const result = await login(formData.email, formData.password);
             if (result.success) {
-                showToast('Login successful!', 'success');
-                navigate(from, { replace: true });
+                showToast('Login successful!', 'success', 1000); // Shorter duration for login
+                // Add a small delay to ensure toast is visible before redirect
+                setTimeout(() => {
+                    navigate(from, { replace: true });
+                }, 800);
             } else {
                 showToast(result.error || 'Login failed. Please try again.', 'error');
             }
@@ -93,11 +96,17 @@ import { useToast } from '../../../components/Toast';
             transition={{ duration: 0.5 }}
             >
             {/* Logo */}
-            <img 
-                src="/chiflogo.png" 
-                alt="Chifere Logo" 
-                className="w-24 h-24 mx-auto mb-6"
-            />
+            <div className="flex flex-col items-center mb-6">
+              <img 
+                  src="/chiflogo.png" 
+                  alt="Chifere Cebu Logo" 
+                  className="w-24 h-24 mx-auto mb-4"
+              />
+              <div className="text-3xl font-bold">
+                <span style={{ color: '#3B82F6' }}>ChiFere</span>
+                <span style={{ color: '#10B981' }}> Cebu</span>
+              </div>
+            </div>
             {/* Header */}
             <div className="text-center mb-8 w-full">
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">WELCOME BACK</h1>

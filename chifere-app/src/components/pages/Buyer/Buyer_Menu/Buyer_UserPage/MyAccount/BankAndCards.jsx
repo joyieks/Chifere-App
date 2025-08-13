@@ -41,7 +41,7 @@ const BankAndCards = () => {
 
   return (
     <div className="p-8 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
-      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl mx-auto backdrop-blur-sm border border-white/20">
+      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-4xl mx-auto backdrop-blur-sm border border-white/20">
         {/* Header with gradient text */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
@@ -91,8 +91,8 @@ const BankAndCards = () => {
             >
               <div className="flex items-center">
                 <div className="relative">
-                  <img src={w.img} alt={w.type} className="w-16 h-16 object-contain mr-6 group-hover:scale-110 transition-transform duration-200" />
-                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                  <img src={w.img} alt={w.type} className="w-16 h-16 object-contain mr-8 group-hover:scale-110 transition-transform duration-200" />
+                  <div className="absolute -top-2 -right-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                     <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>

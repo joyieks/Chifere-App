@@ -15,9 +15,17 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // For development/testing: clear any existing user session
-    // This ensures users start as unauthenticated
-    localStorage.removeItem('chifere_user');
+    // Load user from localStorage on app start
+    const savedUser = localStorage.getItem('chifere_user');
+    if (savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setUser(userData);
+      } catch (error) {
+        console.error('Error parsing saved user data:', error);
+        localStorage.removeItem('chifere_user');
+      }
+    }
     setLoading(false);
   }, []);
 

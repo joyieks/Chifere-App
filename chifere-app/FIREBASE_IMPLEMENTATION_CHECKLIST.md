@@ -289,3 +289,5 @@ const handleLogin = async (email, password) => {
 
 The foundation is solid - now we implement the real Firebase integration! 🔥
 
+
+

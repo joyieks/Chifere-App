@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiShoppingCart, FiHeart, FiUser, FiLogOut, FiMenu, FiX, FiBell, FiPhone } from 'react-icons/fi';
+import { FiShoppingCart, FiHeart, FiUser, FiLogOut, FiMenu, FiX, FiBell, FiPhone, FiSearch } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from './Toast';
@@ -9,6 +9,7 @@ import theme from '../styles/designSystem';
 
 const Navigation = ({ showPromotionalBar = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { user, logout } = useAuth();
   const { getCartCount } = useCart();
   const { showToast } = useToast();
@@ -19,6 +20,13 @@ const Navigation = ({ showPromotionalBar = false }) => {
     logout();
     showToast('Logged out successfully', 'success');
     navigate('/');
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
   };
 
   const isActive = (path) => location.pathname === path;
@@ -61,26 +69,33 @@ const Navigation = ({ showPromotionalBar = false }) => {
           <div className="flex justify-between items-center" style={{ height: theme.components.navigation.height }}>
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/chiflogo.png" alt="Chifere" className="h-8 w-8" />
-            <span className="text-xl font-bold text-gray-900">Chifere</span>
+            <img src="/chiflogo.png" alt="Chifere Cebu" className="h-8 w-8" />
+            <span className="text-xl font-bold">
+              <span style={{ color: '#3B82F6' }}>ChiFere</span>
+              <span style={{ color: '#10B981' }}> Cebu</span>
+            </span>
           </Link>
 
-          {/* Spacer for navigation layout */}
-          <div className="hidden md:flex flex-1"></div>
+          {/* Search Bar */}
+          <div className="hidden md:flex flex-1 max-w-md mx-8">
+            <form onSubmit={handleSearch} className="w-full">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search for products, brands, or categories..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              </div>
+            </form>
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             {user ? (
               <>
-                <Link
-                  to="/buyer/dashboard"
-                  className={`text-gray-700 hover:text-blue-600 transition-colors ${
-                    isActive('/buyer/dashboard') ? 'text-blue-600 font-semibold' : ''
-                  }`}
-                >
-                  Dashboard
-                </Link>
-                
                 {/* Notifications */}
                 <Link
                   to="/buyer/notifications"
@@ -193,16 +208,25 @@ const Navigation = ({ showPromotionalBar = false }) => {
           exit={{ opacity: 0, height: 0 }}
           className="md:hidden bg-white border-t border-gray-200"
         >
+          {/* Mobile Search Bar */}
+          <div className="px-4 py-4 border-b border-gray-200">
+            <form onSubmit={handleSearch} className="w-full">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search for products, brands, or categories..."
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              </div>
+            </form>
+          </div>
+          
           <div className="px-4 py-2 space-y-1">
             {user ? (
               <>
-                <Link
-                  to="/buyer/dashboard"
-                  className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
                 <Link
                   to="/buyer/wishlist"
                   className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
