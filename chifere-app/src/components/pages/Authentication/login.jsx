@@ -35,6 +35,7 @@ import { useToast } from '../../../components/Toast';
     const [formData, setFormData] = useState({
         email: '',
         password: '',
+        role: 'buyer',
         rememberMe: false
     });
     const [loading, setLoading] = useState(false);
@@ -43,8 +44,10 @@ import { useToast } from '../../../components/Toast';
     const { login } = useAuth();
     const { showToast } = useToast();
     
-    // Get the intended destination from location state
-    const from = location.state?.from?.pathname || '/buyer/dashboard';
+    // Get the intended destination based on role
+    const getDefaultPath = (role) => {
+        return role === 'seller' ? '/seller/dashboard' : '/buyer/dashboard';
+    };
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -59,12 +62,13 @@ import { useToast } from '../../../components/Toast';
         setLoading(true);
         
         try {
-            const result = await login(formData.email, formData.password);
+            const result = await login(formData.email, formData.password, formData.role);
             if (result.success) {
                 showToast('Login successful!', 'success', 1000); // Shorter duration for login
                 // Add a small delay to ensure toast is visible before redirect
+                const redirectPath = location.state?.from?.pathname || getDefaultPath(formData.role);
                 setTimeout(() => {
-                    navigate(from, { replace: true });
+                    navigate(redirectPath, { replace: true });
                 }, 800);
             } else {
                 showToast(result.error || 'Login failed. Please try again.', 'error');
@@ -146,6 +150,37 @@ import { useToast } from '../../../components/Toast';
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
                     {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                    </button>
+                </div>
+                </div>
+
+                {/* Role Selection */}
+                <div>
+                <label className="block text-gray-900 font-medium mb-2">Login as</label>
+                <div className="grid grid-cols-2 gap-4">
+                    <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, role: 'buyer' })}
+                    className={`p-3 border-2 rounded-lg text-center transition-all ${
+                        formData.role === 'buyer'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                    >
+                    <div className="font-medium">Buyer</div>
+                    <div className="text-sm text-gray-600">Shop & Barter Items</div>
+                    </button>
+                    <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, role: 'seller' })}
+                    className={`p-3 border-2 rounded-lg text-center transition-all ${
+                        formData.role === 'seller'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                    >
+                    <div className="font-medium">Seller/Barterer</div>
+                    <div className="text-sm text-gray-600">Sell & Barter Items</div>
                     </button>
                 </div>
                 </div>

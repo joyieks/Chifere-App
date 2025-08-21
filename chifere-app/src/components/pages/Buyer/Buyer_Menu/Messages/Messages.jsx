@@ -1,0 +1,82 @@
+/**
+ * Buyer Messages Component
+ * 
+ * Dedicated messaging interface for buyers that uses the shared ChatInterface
+ * with buyer-specific layout and styling.
+ * 
+ * @version 1.0.0 - Buyer-specific messaging implementation
+ */
+
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import BuyerLayout from '../Buyer_Layout/Buyer_layout';
+import ChatInterface from '../../../Shared/Message/ChatInterface';
+import { MessagingProvider } from '../../../../../contexts/MessagingContext';
+import { theme } from '../../../../../styles/designSystem';
+
+const Messages = () => {
+  const { conversationId } = useParams();
+  
+  return (
+    <MessagingProvider>
+      <BuyerLayout>
+        <div 
+          style={{
+            height: 'calc(100vh - 64px)', // Subtract navigation height
+            backgroundColor: theme.colors.white,
+            overflow: 'hidden'
+          }}
+        >
+          
+          {/* Page Header */}
+          <div 
+            style={{
+              padding: `${theme.spacing[6]} ${theme.spacing[6]} ${theme.spacing[4]}`,
+              borderBottom: `1px solid ${theme.colors.gray[200]}`,
+              backgroundColor: theme.colors.white
+            }}
+          >
+            <div className="max-w-7xl mx-auto">
+              <h1 
+                style={{
+                  fontSize: theme.typography.fontSize['3xl'],
+                  fontWeight: theme.typography.fontWeight.bold,
+                  color: theme.colors.gray[900],
+                  marginBottom: theme.spacing[2]
+                }}
+              >
+                Messages
+              </h1>
+              <p 
+                style={{
+                  fontSize: theme.typography.fontSize.lg,
+                  color: theme.colors.gray[600]
+                }}
+              >
+                Chat with sellers, negotiate deals, and manage your conversations
+              </p>
+            </div>
+          </div>
+
+          {/* Chat Interface */}
+          <div 
+            style={{
+              height: 'calc(100% - 120px)', // Subtract header height
+              backgroundColor: theme.colors.white
+            }}
+          >
+            <div className="max-w-7xl mx-auto h-full">
+              <ChatInterface 
+                initialConversationId={conversationId}
+                className="h-full"
+                userRole="buyer"
+              />
+            </div>
+          </div>
+        </div>
+      </BuyerLayout>
+    </MessagingProvider>
+  );
+};
+
+export default Messages;

@@ -9,7 +9,7 @@ import { ProductGridSkeleton } from './components/Skeleton';
 
 // Lazy load components for better performance
 const LandingPage = lazy(() => import('./components/pages/Landing/landingpage.jsx'));
-const Login = lazy(() => import('./components/pages/Authentication/Login.jsx'));
+const Login = lazy(() => import('./components/pages/Authentication/login.jsx'));
 const Signup = lazy(() => import('./components/pages/Authentication/signup.jsx'));
 const BuyerDashboard = lazy(() => import('./components/pages/Buyer/Buyer_Menu/Buyer_Dashboard/Buyer_Dashboard.jsx'));
 const UserPageLayout = lazy(() => import('./components/pages/Buyer/Buyer_Menu/Buyer_UserPage/UserPageLayout/UserPageLayout.jsx'));
@@ -26,9 +26,21 @@ const TrackOrder = lazy(() => import('./components/pages/Buyer/Buyer_Menu/Buyer_
 const Item = lazy(() => import('./components/pages/Shared/Item/Item.jsx'));
 const SearchResult = lazy(() => import('./components/pages/Shared/SearchItem/SearchResult.jsx'));
 const Checkout = lazy(() => import('./components/pages/Buyer/Buyer_Menu/Buyer_UserPage/MyPurchase/Checkout.jsx'));
-const BStore = lazy(() => import('./components/pages/Buyer/Buyer_Store/BStore.jsx'));
-const BStore_Items = lazy(() => import('./components/pages/Buyer/Buyer_Store/BStore_Items.jsx'));
 const StorePage = lazy(() => import('./components/pages/Buyer/BuyerStore/StorePage.jsx'));
+const BuyerMessages = lazy(() => import('./components/pages/Buyer/Buyer_Menu/Messages/Messages.jsx'));
+const BarterNegotiation = lazy(() => import('./components/pages/Shared/Barter/BarterNegotiation.jsx'));
+const RatingReviews = lazy(() => import('./components/pages/Shared/Reviews/RatingReviews.jsx'));
+const HelpCenter = lazy(() => import('./components/pages/Shared/Help/HelpCenter.jsx'));
+const AdvancedSearch = lazy(() => import('./components/pages/Shared/Search/AdvancedSearch.jsx'));
+
+// Seller Components
+const SellerDashboard = lazy(() => import('./components/pages/Seller/Seller_Menu/Seller_Dashboard/SellerDashboard.jsx'));
+const SellerProducts = lazy(() => import('./components/pages/Seller/Seller_Menu/Products/Products.jsx'));
+const SellerOrders = lazy(() => import('./components/pages/Seller/Seller_Menu/Orders/Orders.jsx'));
+const SellerAnalytics = lazy(() => import('./components/pages/Seller/Seller_Menu/Analytics/Analytics.jsx'));
+const SellerMessages = lazy(() => import('./components/pages/Seller/Seller_Menu/Messages/Messages.jsx'));
+const SellerProfile = lazy(() => import('./components/pages/Seller/Seller_Menu/Profile/Profile.jsx'));
+const SellerSettings = lazy(() => import('./components/pages/Seller/Seller_Menu/Settings/Settings.jsx'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -136,6 +148,22 @@ function AppRoutes() {
           } 
         />
         <Route 
+          path="/buyer/messages" 
+          element={
+            <ProtectedRoute>
+              <BuyerMessages />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/buyer/messages/:conversationId" 
+          element={
+            <ProtectedRoute>
+              <BuyerMessages />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
           path="/buyer/wishlist" 
           element={
             <ProtectedRoute>
@@ -148,6 +176,38 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <Cart key={location.pathname} />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/barter/:itemId" 
+          element={
+            <ProtectedRoute>
+              <BarterNegotiation />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/reviews/:itemId" 
+          element={
+            <ProtectedRoute>
+              <RatingReviews />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/help" 
+          element={
+            <ProtectedRoute>
+              <HelpCenter />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/search" 
+          element={
+            <ProtectedRoute>
+              <AdvancedSearch />
             </ProtectedRoute>
           } 
         />
@@ -167,18 +227,62 @@ function AppRoutes() {
             </ProtectedRoute>
           } 
         />
+        
+        {/* Protected Seller Routes */}
         <Route 
-          path="/buyer/store/items" 
+          path="/seller/dashboard" 
           element={
             <ProtectedRoute>
-              <BStore_Items />
+              <SellerDashboard />
             </ProtectedRoute>
           } 
         />
         <Route 
-          path="/store/:storeId" 
+          path="/seller/products" 
           element={
-            <StorePage />
+            <ProtectedRoute>
+              <SellerProducts />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/seller/orders" 
+          element={
+            <ProtectedRoute>
+              <SellerOrders />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/seller/analytics" 
+          element={
+            <ProtectedRoute>
+              <SellerAnalytics />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/seller/messages" 
+          element={
+            <ProtectedRoute>
+              <SellerMessages />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/seller/profile" 
+          element={
+            <ProtectedRoute>
+              <SellerProfile />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/seller/settings" 
+          element={
+            <ProtectedRoute>
+              <SellerSettings />
+            </ProtectedRoute>
           } 
         />
         

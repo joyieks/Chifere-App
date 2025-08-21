@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiShoppingCart, FiHeart, FiUser, FiLogOut, FiMenu, FiX, FiBell, FiPhone } from 'react-icons/fi';
+import { FiShoppingCart, FiHeart, FiUser, FiLogOut, FiMenu, FiX, FiBell, FiPhone, FiMessageCircle, FiSettings } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from './Toast';
@@ -10,7 +10,7 @@ import SearchAutocomplete from './SearchAutocomplete';
 
 const Navigation = ({ showPromotionalBar = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, switchRole } = useAuth();
   const { getCartCount } = useCart();
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -20,6 +20,14 @@ const Navigation = ({ showPromotionalBar = false }) => {
     logout();
     showToast('Logged out successfully', 'success');
     navigate('/');
+  };
+
+  const handleRoleSwitch = (newRole) => {
+    if (switchRole(newRole)) {
+      showToast(`Switched to ${newRole} mode`, 'success');
+      const dashboardPath = newRole === 'seller' ? '/seller/dashboard' : '/buyer/dashboard';
+      navigate(dashboardPath);
+    }
   };
 
   const handleSuggestionSelected = (suggestion) => {
@@ -74,52 +82,75 @@ const Navigation = ({ showPromotionalBar = false }) => {
             </span>
           </Link>
 
-          {/* Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <SearchAutocomplete 
-              onSuggestionSelected={handleSuggestionSelected}
-              className="w-full"
-            />
-          </div>
+          {/* Search Bar - Only show for buyers */}
+          {(!user || user.role === 'buyer') && (
+            <div className="hidden md:flex flex-1 max-w-md mx-8">
+              <SearchAutocomplete 
+                onSuggestionSelected={handleSuggestionSelected}
+                className="w-full"
+              />
+            </div>
+          )}
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             {user ? (
               <>
-                {/* Notifications */}
-                <Link
-                  to="/buyer/notifications"
-                  className="text-gray-700 hover:text-blue-600 transition-colors relative flex items-center space-x-1"
-                >
-                  <FiBell className="w-5 h-5" />
-                  <span className="hidden lg:block text-sm">Notifications</span>
-                </Link>
-
-                {/* Wishlist */}
-                <Link
-                  to="/buyer/wishlist"
-                  className="text-gray-700 hover:text-red-500 transition-colors relative flex items-center space-x-1"
-                >
-                  <FiHeart className="w-5 h-5" />
-                  <span className="hidden lg:block text-sm">Wishlist</span>
-                </Link>
-
-                {/* Cart */}
-                <Link
-                  to="/buyer/cart"
-                  className="text-gray-700 hover:text-blue-600 transition-colors relative flex items-center space-x-1"
-                >
-                  <FiShoppingCart className="w-5 h-5" />
-                  <span className="hidden lg:block text-sm">Cart</span>
-                  {getCartCount() > 0 && (
-                    <span 
-                      className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
-                      style={{ backgroundColor: theme.colors.error[500] }}
+                {user.role === 'buyer' ? (
+                  <>
+                    {/* Buyer Navigation Elements */}
+                    <Link
+                      to="/buyer/messages"
+                      className="text-gray-700 hover:text-blue-600 transition-colors relative flex items-center space-x-1"
                     >
-                      {getCartCount()}
-                    </span>
-                  )}
-                </Link>
+                      <FiMessageCircle className="w-5 h-5" />
+                      <span className="hidden lg:block text-sm">Messages</span>
+                    </Link>
+
+                    <Link
+                      to="/buyer/notifications"
+                      className="text-gray-700 hover:text-blue-600 transition-colors relative flex items-center space-x-1"
+                    >
+                      <FiBell className="w-5 h-5" />
+                      <span className="hidden lg:block text-sm">Notifications</span>
+                    </Link>
+
+                    <Link
+                      to="/buyer/wishlist"
+                      className="text-gray-700 hover:text-red-500 transition-colors relative flex items-center space-x-1"
+                    >
+                      <FiHeart className="w-5 h-5" />
+                      <span className="hidden lg:block text-sm">Wishlist</span>
+                    </Link>
+
+                    <Link
+                      to="/buyer/cart"
+                      className="text-gray-700 hover:text-blue-600 transition-colors relative flex items-center space-x-1"
+                    >
+                      <FiShoppingCart className="w-5 h-5" />
+                      <span className="hidden lg:block text-sm">Cart</span>
+                      {getCartCount() > 0 && (
+                        <span 
+                          className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                          style={{ backgroundColor: theme.colors.error[500] }}
+                        >
+                          {getCartCount()}
+                        </span>
+                      )}
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    {/* Seller Navigation Elements - Just Messages */}
+                    <Link
+                      to="/seller/messages"
+                      className="text-gray-700 hover:text-blue-600 transition-colors relative flex items-center space-x-1"
+                    >
+                      <FiMessageCircle className="w-5 h-5" />
+                      <span className="hidden lg:block text-sm">Messages</span>
+                    </Link>
+                  </>
+                )}
                 <div className="relative group">
                   <button className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors">
                     <img
@@ -129,25 +160,69 @@ const Navigation = ({ showPromotionalBar = false }) => {
                     />
                     <span className="hidden lg:block">{user.name}</span>
                   </button>
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    {/* Role Status */}
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-xs text-gray-500">Current Mode</p>
+                      <p className="text-sm font-medium text-gray-800 capitalize">
+                        {user.role} Mode
+                      </p>
+                    </div>
+
+                    {/* Account Links */}
                     <Link
-                      to="/buyer/account"
+                      to={user.role === 'buyer' ? '/buyer/account' : '/seller/profile'}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
+                      <FiUser className="inline mr-2 w-4 h-4" />
                       My Account
                     </Link>
+                    
+                    {user.role === 'buyer' && (
+                      <Link
+                        to="/buyer/purchase"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        My Purchases
+                      </Link>
+                    )}
+
                     <Link
-                      to="/buyer/purchase"
+                      to={user.role === 'buyer' ? '/buyer/settings' : '/seller/settings'}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
-                      My Purchases
-                    </Link>
-                    <Link
-                      to="/buyer/settings"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
+                      <FiSettings className="inline mr-2 w-4 h-4" />
                       Settings
                     </Link>
+
+                    {/* Role Switching */}
+                    {user.canSwitchRoles && (
+                      <>
+                        <div className="border-t border-gray-100 my-1"></div>
+                        <div className="px-4 py-2">
+                          <p className="text-xs text-gray-500 mb-2">Switch Mode</p>
+                          {user.role === 'buyer' ? (
+                            <button
+                              onClick={() => handleRoleSwitch('seller')}
+                              className="w-full text-left px-2 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded"
+                            >
+                              <FiShoppingCart className="inline mr-2 w-4 h-4" />
+                              Seller Mode
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleRoleSwitch('buyer')}
+                              className="w-full text-left px-2 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded"
+                            >
+                              <FiUser className="inline mr-2 w-4 h-4" />
+                              Buyer Mode
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    )}
+
+                    <div className="border-t border-gray-100 my-1"></div>
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -198,52 +273,110 @@ const Navigation = ({ showPromotionalBar = false }) => {
           exit={{ opacity: 0, height: 0 }}
           className="md:hidden bg-white border-t border-gray-200"
         >
-          {/* Mobile Search Bar */}
-          <div className="px-4 py-4 border-b border-gray-200">
-            <SearchAutocomplete 
-              onSuggestionSelected={handleSuggestionSelected}
-              className="w-full"
-            />
-          </div>
+          {/* Mobile Search Bar - Only show for buyers */}
+          {(!user || user.role === 'buyer') && (
+            <div className="px-4 py-4 border-b border-gray-200">
+              <SearchAutocomplete 
+                onSuggestionSelected={handleSuggestionSelected}
+                className="w-full"
+              />
+            </div>
+          )}
           
           <div className="px-4 py-2 space-y-1">
             {user ? (
               <>
-                <Link
-                  to="/buyer/wishlist"
-                  className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Wishlist
-                </Link>
-                <Link
-                  to="/buyer/cart"
-                  className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Cart ({getCartCount()})
-                </Link>
-                <Link
-                  to="/buyer/account"
-                  className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  My Account
-                </Link>
-                <Link
-                  to="/buyer/purchase"
-                  className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  My Purchases
-                </Link>
-                <Link
-                  to="/buyer/settings"
-                  className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Settings
-                </Link>
+                {user.role === 'buyer' ? (
+                  <>
+                    <Link
+                      to="/buyer/messages"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Messages
+                    </Link>
+                    <Link
+                      to="/buyer/wishlist"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Wishlist
+                    </Link>
+                    <Link
+                      to="/buyer/cart"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Cart ({getCartCount()})
+                    </Link>
+                    <Link
+                      to="/buyer/account"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My Account
+                    </Link>
+                    <Link
+                      to="/buyer/purchase"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My Purchases
+                    </Link>
+                    <Link
+                      to="/buyer/settings"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Settings
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/seller/dashboard"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/seller/products"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My Products
+                    </Link>
+                    <Link
+                      to="/seller/orders"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Orders (7)
+                    </Link>
+                    <Link
+                      to="/seller/messages"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Messages
+                    </Link>
+                    <Link
+                      to="/seller/analytics"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Analytics
+                    </Link>
+                    <Link
+                      to="/seller/settings"
+                      className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Settings
+                    </Link>
+                  </>
+                )}
                 <button
                   onClick={() => {
                     handleLogout();

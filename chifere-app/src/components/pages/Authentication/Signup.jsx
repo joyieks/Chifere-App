@@ -179,7 +179,7 @@ const Signup = () => {
                 setLoading(true);
                 
                 try {
-                  const result = await signup(formData.email, formData.password, formData.firstName);
+                  const result = await signup(formData.email, formData.password, formData.firstName, userType);
                   if (result.success) {
                     showToast('Registration successful! Please verify your email.', 'success');
                     setStep(3);

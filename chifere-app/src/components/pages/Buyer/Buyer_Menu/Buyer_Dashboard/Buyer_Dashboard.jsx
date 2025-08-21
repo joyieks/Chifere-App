@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import BuyerLayout from '../Buyer_Layout/Buyer_layout';
 import { useNavigate } from 'react-router-dom';
+import { theme } from '../../../../../styles/designSystem';
 
 const Buyer_Dashboard = () => {
   const navigate = useNavigate();
@@ -205,7 +206,7 @@ const Buyer_Dashboard = () => {
           <div className="relative max-w-7xl mx-auto px-6 py-16">
             <div className="text-center">
               <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
-                Welcome to <span style={{ color: '#3B82F6' }}>ChiFere</span><span style={{ color: '#10B981' }}> Cebu</span>
+                Welcome to <span style={{ color: theme.colors.primary[500] }}>ChiFere</span><span style={{ color: theme.colors.success[500] }}> Cebu</span>
               </h1>
               <p className="text-xl md:text-2xl mb-8 text-blue-100 animate-slide-up">
                 Discover amazing preloved items and barter opportunities
@@ -216,8 +217,8 @@ const Buyer_Dashboard = () => {
           {/* Decorative Elements */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
             <div className="absolute -top-16 -right-16 w-32 h-32 bg-white/10 rounded-full animate-float"></div>
-            <div className="absolute top-32 -left-8 w-20 h-20 bg-white/10 rounded-full animate-float" style={{ animationDelay: '1s' }}></div>
-            <div className="absolute bottom-16 right-32 w-24 h-24 bg-white/10 rounded-full animate-float" style={{ animationDelay: '2s' }}></div>
+            <div className="absolute top-32 -left-8 w-20 h-20 bg-white/10 rounded-full animate-float animate-delay-1s"></div>
+            <div className="absolute bottom-16 right-32 w-24 h-24 bg-white/10 rounded-full animate-float animate-delay-2s"></div>
           </div>
         </div>
 
@@ -384,32 +385,16 @@ const Buyer_Dashboard = () => {
       </div>
 
       <style jsx>{`
-        .animate-fade-in {
-          animation: fadeIn 1s ease-out;
-        }
-        
-        .animate-slide-up {
-          animation: slideUp 0.8s ease-out;
-        }
-        
         .animate-float {
           animation: float 6s ease-in-out infinite;
         }
         
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+        .animate-delay-1s {
+          animation-delay: 1s;
         }
         
-        @keyframes slideUp {
-          from { 
-            opacity: 0; 
-            transform: translateY(30px); 
-          }
-          to { 
-            opacity: 1; 
-            transform: translateY(0); 
-          }
+        .animate-delay-2s {
+          animation-delay: 2s;
         }
         
         @keyframes float {

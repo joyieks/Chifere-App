@@ -28,6 +28,7 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import BuyerLayout from '../Buyer_Layout/Buyer_layout';
 import theme from '../../../../../styles/designSystem';
 
@@ -65,7 +66,7 @@ const initialBarterCart = [
   },
 ];
 
-const CartSection = ({ title, cart, selected, setSelected, handleRemove, handleSelectAll, handleSelect, allSelected, total, isBarter }) => (
+const CartSection = ({ title, cart, selected, setSelected, handleRemove, handleSelectAll, handleSelect, allSelected, total, isBarter, navigate }) => (
   <div className="mb-8">
     {/* Section Header */}
     <h3 
@@ -252,25 +253,44 @@ const CartSection = ({ title, cart, selected, setSelected, handleRemove, handleS
                       </div>
               </div>
                     
-                    <button 
-                      className="px-4 py-2 rounded-lg font-medium transition-all duration-200"
-                      style={{
-                        color: theme.colors.error[600],
-                        backgroundColor: 'transparent',
-                        border: `1px solid ${theme.colors.error[200]}`
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = theme.colors.error[50];
-                        e.target.style.borderColor = theme.colors.error[300];
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = 'transparent';
-                        e.target.style.borderColor = theme.colors.error[200];
-                      }}
-                      onClick={() => handleRemove(storeIdx, item.id)}
-                    >
-                      🗑️ Remove
-                    </button>
+                    <div className="flex space-x-2">
+                      <button 
+                        className="px-3 py-2 rounded-lg font-medium transition-all duration-200"
+                        style={{
+                          color: theme.colors.secondary[600],
+                          backgroundColor: 'transparent',
+                          border: `1px solid ${theme.colors.secondary[200]}`
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = theme.colors.secondary[50];
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = 'transparent';
+                        }}
+                        onClick={() => navigate(`/barter/${item.id}`)}
+                      >
+                        🔄 Barter
+                      </button>
+                      <button 
+                        className="px-3 py-2 rounded-lg font-medium transition-all duration-200"
+                        style={{
+                          color: theme.colors.error[600],
+                          backgroundColor: 'transparent',
+                          border: `1px solid ${theme.colors.error[200]}`
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = theme.colors.error[50];
+                          e.target.style.borderColor = theme.colors.error[300];
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.borderColor = theme.colors.error[200];
+                        }}
+                        onClick={() => handleRemove(storeIdx, item.id)}
+                      >
+                        🗑️ Remove
+                      </button>
+                    </div>
               </div>
               </div>
               </div>
@@ -352,8 +372,23 @@ const CartSection = ({ title, cart, selected, setSelected, handleRemove, handleS
           onMouseLeave={(e) => {
             e.target.style.background = `linear-gradient(to right, ${theme.colors.primary[600]}, ${theme.colors.primary[500]})`;
           }}
-          // TODO: Firebase Implementation - Connect to checkout flow
-          onClick={() => console.log('Checkout clicked - implement navigation to checkout')}
+          onClick={() => {
+            // Navigate to checkout with selected items
+            const selectedItems = cart.flatMap(store => 
+              store.items.filter(item => selected[item.id])
+            );
+            if (selectedItems.length > 0) {
+              navigate('/checkout', { 
+                state: { 
+                  selectedItems,
+                  isBarter,
+                  total: isBarter ? 0 : total 
+                }
+              });
+            } else {
+              alert('Please select items to checkout');
+            }
+          }}
         >
           🛒 Check Out
         </button>
@@ -363,6 +398,7 @@ const CartSection = ({ title, cart, selected, setSelected, handleRemove, handleS
 );
 
 const Cart = () => {
+  const navigate = useNavigate();
   const [tab, setTab] = useState('all'); // 'all', 'preloved', 'barter'
   // Preloved
   const [prelovedCart, setPrelovedCart] = useState(initialPrelovedCart);
@@ -552,6 +588,7 @@ const Cart = () => {
               allSelected={prelovedAllSelected}
               total={prelovedTotal}
               isBarter={false}
+              navigate={navigate}
             />
           )}
           {(tab === 'all' || tab === 'barter') && barterCart.length > 0 && (
@@ -566,6 +603,7 @@ const Cart = () => {
               allSelected={barterAllSelected}
               total={barterTotal}
               isBarter={true}
+              navigate={navigate}
             />
           )}
         </div>

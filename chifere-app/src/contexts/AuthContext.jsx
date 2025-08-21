@@ -29,17 +29,18 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, role = 'buyer') => {
     try {
       // Simulate API call - replace with actual authentication
-      // For testing: only allow specific credentials
+      // For testing: allow specific credentials with role selection
       if (email === 'test@gmail.com' && password === '123456') {
         const mockUser = {
           id: 1,
           email,
-          name: 'John Doe',
-          role: 'buyer',
-          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'
+          name: role === 'seller' ? 'John Seller' : 'John Buyer',
+          role: role,
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+          canSwitchRoles: true // Allow cross-role actions for barter marketplace
         };
         
         setUser(mockUser);
@@ -53,15 +54,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const signup = async (email, password, name) => {
+  const signup = async (email, password, name, role = 'buyer') => {
     try {
       // Simulate API call - replace with actual registration
       const mockUser = {
-        id: 1,
+        id: Date.now(), // Generate unique ID
         email,
         name,
-        role: 'buyer',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'
+        role: role,
+        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+        canSwitchRoles: true // Allow cross-role actions for barter marketplace
       };
       
       setUser(mockUser);
@@ -70,6 +72,20 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return { success: false, error: error.message };
     }
+  };
+
+  const switchRole = (newRole) => {
+    if (user && user.canSwitchRoles) {
+      const updatedUser = {
+        ...user,
+        role: newRole,
+        name: newRole === 'seller' ? user.name.replace('Buyer', 'Seller') : user.name.replace('Seller', 'Buyer')
+      };
+      setUser(updatedUser);
+      localStorage.setItem('chifere_user', JSON.stringify(updatedUser));
+      return true;
+    }
+    return false;
   };
 
   const logout = () => {
@@ -83,6 +99,7 @@ export const AuthProvider = ({ children }) => {
     login,
     signup,
     logout,
+    switchRole,
     isAuthenticated: !!user
   };
 

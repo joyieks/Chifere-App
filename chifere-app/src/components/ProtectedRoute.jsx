@@ -20,8 +20,9 @@ const ProtectedRoute = ({ children, requireAuth = true }) => {
   }
 
   if (!requireAuth && user) {
-    // Redirect to dashboard if already authenticated
-    return <Navigate to="/buyer/dashboard" replace />;
+    // Redirect to appropriate dashboard based on user role
+    const dashboardPath = user.role === 'seller' ? '/seller/dashboard' : '/buyer/dashboard';
+    return <Navigate to={dashboardPath} replace />;
   }
 
   return children;
